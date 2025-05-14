@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      # Sync latest code on self-hosted runner (ensure the latest changes are pulled)
+      # Sync latest code on self-hosted runner (ensure the latest changes are pulled
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
