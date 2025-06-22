@@ -16,8 +16,8 @@ jobs:
         run: |
           echo "Pulling the latest code..."
           cd /home/octaloop/actions-runner/online_shop  # Path to self-hosted runner directory
-          git config pull.rebase false  # Set merge strategy (you can change 'false' to 'true' for rebase)
-          git pull origin main  # Pull latest changes from the 'main' branch
+          git config pull.rebase false  # Set merge strategy
+          git pull --strategy=recursive --strategy-option=theirs origin main  # Automatically accept remote changes in case of conflict
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
