@@ -1,19 +1,52 @@
-name: Portfolio Deployment
+
+name: online shop
+
 on:
   push:
     branches:
-    - main
+      - main  # Run the workflow on every push to the 'main' branch
+
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: self-hosted  # Use self-hosted runner
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-    - name: Deploy static site to S3 bucket
-      run: aws s3 sync . s3://hafizsb-bucket --delete
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Sync latest code on self-hosted runner
+        run: |
+          echo "Pulling the latest code..."
+          cd /home/octaloop/actions-runner/online_shop  # Path to self-hosted runner directory
+          git pull origin main  # Pull the latest changes from the 'main' branch
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '17'  # Replace with your desired Node.js version
+
+      - name: Set working directory
+        run: |
+          cd /home/octaloop/actions-runner/online_shop  # Path to your project directory
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache -t online-image .  # Build the Docker image without cache
+
+      - name: Check if the container is running, then stop and remove it
+        run: |
+          if docker ps -q --filter "name=online-shop-container"; then
+            echo "Stopping and removing container online-shop-container..."
+            docker stop online-shop-container || true  # Stop the container if it's running
+            docker rm online-shop-container || true  # Remove the container if it's stopped
+          else
+            echo "Container online-shop-container is not running. Skipping stop and remove."
+          fi
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 3000:3000 --name online-shop-container online-image  # Run the container on port 3000
+
+      - name: Publish package to GitHub Packages
+        run: |
+          echo "Publishing package to GitHub Packages..."
+          npm publish --access public  # Replace with your desired publishing strategy (private/public)
