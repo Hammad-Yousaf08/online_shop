@@ -16,7 +16,7 @@ jobs:
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
-          cd /home/octaloop/actions-runner/online_shop  # Path to self-hosted runner directory
+          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop  # Path to self-hosted runner directory
           git pull origin main  # Pull the latest changes from the 'main' branch
 
       - name: Set up Node.js
@@ -26,7 +26,7 @@ jobs:
 
       - name: Set working directory
         run: |
-          cd /home/octaloop/actions-runner/online_shop  # Path to your project directory
+          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop  # Path to your project directory
 
       - name: Build Docker image
         run: |
