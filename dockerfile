@@ -1,4 +1,4 @@
-#Step 1: Use official Node.js images
+#Step 1: Use official Node.js img
 FROM node:22.15.0
 
 # Step 2: Set the working directory inside the container
