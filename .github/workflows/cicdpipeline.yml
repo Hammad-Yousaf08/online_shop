@@ -1,4 +1,3 @@
-
 name: online shop
 
 on:
@@ -8,45 +7,48 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted  # Use self-hosted runner
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
-          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop  # Path to self-hosted runner directory
-          git pull origin main  # Pull the latest changes from the 'main' branch
+          cd /home/octaloop/actions-runner/online_shop
+          git pull origin main
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '17'  # Replace with your desired Node.js version
+          node-version: '17'
 
       - name: Set working directory
         run: |
-          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop  # Path to your project directory
+          cd /home/octaloop/actions-runner/online_shop
 
       - name: Build Docker image
         run: |
-          docker build --no-cache -t online-image .  # Build the Docker image without cache
+          docker build --no-cache -t online-image .
 
       - name: Check if the container is running, then stop and remove it
         run: |
           if docker ps -q --filter "name=online-shop-container"; then
             echo "Stopping and removing container online-shop-container..."
-            docker stop online-shop-container || true  # Stop the container if it's running
-            docker rm online-shop-container || true  # Remove the container if it's stopped
+            docker stop online-shop-container || true
+            docker rm online-shop-container || true
           else
             echo "Container online-shop-container is not running. Skipping stop and remove."
           fi
 
       - name: Run Docker container
         run: |
-          docker run -d -p 3000:3000 --name online-shop-container online-image  # Run the container on port 3000
+          docker run -d -p 3000:3000 --name online-shop-container online-image
+
+      - name: Authenticate with npm
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Publish package to GitHub Packages
         run: |
           echo "Publishing package to GitHub Packages..."
-          npm publish --access public  # Replace with your desired publishing strategy (private/public)
+          npm publish --access public
