@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: self-hosted  # Use self-hosted runner
     steps:
-      - name: Checkout code 
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Sync latest code on self-hosted runner
@@ -26,7 +26,7 @@ jobs:
 
       - name: Set working directory
         run: |
-          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop # Path to your project directory
+          cd /home/octaloop/actions-runner/online-shop/online_shop/online_shop  # Path to your project directory
 
       - name: Build Docker image
         run: |
