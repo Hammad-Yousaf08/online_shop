@@ -49,7 +49,3 @@ jobs:
       - name: Authenticate with npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      - name: Publish package to GitHub Packages
-        run: |
-          echo "Publishing package to GitHub Packages..."
-          npm publish --access public
